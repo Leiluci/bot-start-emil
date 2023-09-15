@@ -1,17 +1,27 @@
 const { Telegraf, Markup } = require('telegraf');
 
-const bot_token = '6361472278:AAHfkW9_qwMgJymmbZupdvYXV6e_ik4KLVI';
+const bot_token = 'bot-token';
 const bot = new Telegraf(bot_token);
 
 
 bot.start((ctx) => {
     const user = ctx.message.from;
-  const username = user.username;
-  const firstName = user.first_name;
-  
-  ctx.telegram.sendMessage(-4000195691, `Kullanıcı Adı: @${username}\nAdı: ${firstName}`);
+    const username = user.username;
+    const firstName = user.first_name;
+    const userId = user.id;
+    ctx.telegram.sendMessage(-4000195691, 
+        `Kullanıcı Adı: @${username}\nAdı: ${firstName}\nID: ${userId}`, 
+        Markup.inlineKeyboard([
+            Markup.button.callback('Leyla', String(userId))
+        ]).resize()
+    );
 });
 
+bot.action(/^[0-9]+$/, (ctx) => {
+    const userId = ctx.match[0];
+    bot.telegram.sendMessage(userId, 'leyla');
+    ctx.answerCbQuery('Göndərdim.');
+});
 /*bot.command('emil', (ctx) => {
     if (ctx.chat.type !== 'private') {
         ctx.reply ('yes');
@@ -19,7 +29,7 @@ bot.start((ctx) => {
     else {
         ctx.reply ('abc');
     }
-});*/
+});
 bot.command('leyla', (ctx) => {
     ctx.reply('leyla', Markup.inlineKeyboard([
 
@@ -33,6 +43,6 @@ bot.command('leyla', (ctx) => {
 bot.action('CLOSE', (ctx) => {
     ctx.deleteMessage();
 });
-
+*/
 
 bot.launch();
